@@ -45,6 +45,21 @@ export const ghost = function (subdomain: string, customDomain?: string) {
 }
 
 /**
+ *  Creates a Roast.io backend.
+ * @param {string} subdomain The <subdomain>.roast.io for the roast.io site
+ */
+export const roast = function (appName: string) {
+  return function roastFetch(req: Request, basePath: string) {
+    const roastHost = `${appName}.roast.io`
+    const headers = {
+      'host': roastHost,
+      'x-forwarded-host': req.headers.get("hostname")
+    }
+    return proxy(req, `https://${roastHost}`, { headers, basePath })
+  }
+}
+
+/**
  * Creates a surge.sh backend
  * @param {string} subdomain The <subdomain>.surge.sh for the surge.sh site
  */
@@ -132,6 +147,7 @@ const backends = {
   githubPages,
   glitch,
   heroku,
+  roast,
   surge,
   unmarkdocs
 }
